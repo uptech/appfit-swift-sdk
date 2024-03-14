@@ -91,7 +91,7 @@ extension EventCache {
 
     /// Helper method for building out the path directory
     func cachePath() throws -> URL {
-        if #available(macOS 13.0, *) {
+        if #available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *) {
             let documents =  URL.documentsDirectory.appending(component: "appfit")
             try FileManager.default.createDirectory(at: documents, withIntermediateDirectories: true)
             return documents.appending(component: "cache.af")

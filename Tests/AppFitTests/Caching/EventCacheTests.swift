@@ -117,7 +117,7 @@ final class EventCacheTests: XCTestCase {
     }
 
     func cachePath() -> URL {
-        if #available(macOS 13.0, *) {
+        if #available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *) {
             return URL.documentsDirectory.appending(component: "appfit").appending(component: "cache.af")
         } else {
             let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
