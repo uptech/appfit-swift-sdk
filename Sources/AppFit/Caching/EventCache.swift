@@ -13,6 +13,12 @@ import Foundation
 internal actor EventCache {
     private var cache: [String: AppFitEvent] = [:]
 
+    internal init() {
+        Task.detached {
+            await self.readDataFromDisk()
+        }
+    }
+
     /**
      * The events that have been cached.
      */
@@ -25,8 +31,9 @@ internal actor EventCache {
      * - Parameters:
      *   - event: The event to add.
      */
-    func add(event: AppFitEvent) {
+    internal func add(event: AppFitEvent) {
         self.cache[event.id.uuidString] = event
+        self.saveDataToDisk()
     }
 
     /**
@@ -34,8 +41,9 @@ internal actor EventCache {
      * - Parameters:
      *   - id: The id of the event to remove.
      */
-    func remove(id: String) {
+    internal func remove(id: String) {
         self.cache.removeValue(forKey: id)
+        self.saveDataToDisk()
     }
 
     /**
@@ -43,14 +51,56 @@ internal actor EventCache {
      * - Parameters:
      *   - event: The event to remove.
      */
-    func remove(event: AppFitEvent) {
+    internal func remove(event: AppFitEvent) {
         self.remove(id: event.id.uuidString)
+        self.saveDataToDisk()
     }
 
     /**
      * Clears the cache.
      */
-    func clear() {
+    internal func clear() {
         self.cache.removeAll()
+        self.saveDataToDisk()
+    }
+}
+
+extension EventCache {
+    /// Reads the data from disk
+    private func readDataFromDisk() {
+        do {
+            let data = try Data(contentsOf: self.cachePath())
+            let decoder = JSONDecoder()
+            let cache = try decoder.decode([AppFitEvent].self, from: data)
+            self.cache = Dictionary(uniqueKeysWithValues: cache.map({ ($0.id.uuidString, $0) }))
+        } catch {
+            print("[EventCache] Error reading cache: \(error)")
+        }
+    }
+
+    /// Writes the data to disk
+    private func saveDataToDisk() {
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(self.events)
+            try data.write(to: self.cachePath(), options: [.atomic])
+        } catch {
+            print("[EventCache] Error writing cache \(error)")
+        }
+    }
+
+    /// Helper method for building out the path directory
+    func cachePath() throws -> URL {
+        if #available(macOS 13.0, *) {
+            let documents =  URL.documentsDirectory.appending(component: "appfit")
+            try FileManager.default.createDirectory(at: documents, withIntermediateDirectories: true)
+            return documents.appending(component: "cache.af")
+        } else {
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            let documentsDirectory = paths.first!
+            let cacheFolder = documentsDirectory.appendingPathComponent("appfit")
+            try FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true)
+            return cacheFolder.appendingPathComponent("cache.af")
+        }
     }
 }
