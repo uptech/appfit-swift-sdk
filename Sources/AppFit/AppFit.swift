@@ -13,7 +13,7 @@ import Foundation
  * - Parameters:
  *   - configuration: The configuration for the AppFit SDK.
  */
-public struct AppFit {
+public struct AppFit: Sendable {
     /// The configuration for the AppFit SDK.
     internal let configuration: AppFitConfiguration
 

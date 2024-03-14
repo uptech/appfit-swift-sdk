@@ -11,20 +11,47 @@ import XCTest
 final class AppFitCacheTests: XCTestCase {
     let cache = AppFitCache()
 
-    override func setUpWithError() throws {
-        self.cache.userId = nil
+    override func setUp() async throws {
+        await self.cache.setUserId(nil)
     }
 
-    func testUserIdInitiallyNil() throws {
-        XCTAssertNil(self.cache.userId)
+    @MainActor
+    func testUserIdInitiallyNil() async {
+        let expectation = expectation(description: "User id is nil")
+
+        Task {
+            let value = await self.cache.userId
+            XCTAssertNil(value)
+            expectation.fulfill()
+        }
+
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 
-    func testUserIdSaving() throws {
-        self.cache.userId = "test"
-        XCTAssertEqual(self.cache.userId, "test")
+    func testUserIdSaving() async {
+        let expectation = expectation(description: "User id was saved")
+
+        Task {
+            await self.cache.setUserId("test")
+            let value = await self.cache.userId
+
+            XCTAssertEqual(value, "test")
+            expectation.fulfill()
+        }
+
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 
-    func testAnonymousIdInitiallyNotNil() throws {
-        XCTAssertNotNil(self.cache.anonymousId)
+    func testAnonymousIdInitiallyNotNil() async {
+        let expectation = expectation(description: "Anonymous id was not nil")
+
+        Task {
+            let value = await self.cache.anonymousId
+
+            XCTAssertNotNil(value)
+            expectation.fulfill()
+        }
+
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 }

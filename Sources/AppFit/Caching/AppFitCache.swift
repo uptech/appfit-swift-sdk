@@ -12,15 +12,14 @@ import Foundation
  * anonymous Id's. This allows us to have one concise place to
  * generate and refernce it from.
  */
-internal class AppFitCache {
+internal actor AppFitCache {
     /// The current cached userId
     internal var userId: String? {
-        get {
-            UserDefaults.standard.string(forKey: "userId")
-        }
-        set {
-            UserDefaults.standard.setValue(newValue, forKey: "userId")
-        }
+        UserDefaults.standard.string(forKey: "userId")
+    }
+
+    internal func setUserId(_ id: String?) {
+        UserDefaults.standard.setValue(id, forKey: "userId")
     }
 
     /// The current cached anonymousId.

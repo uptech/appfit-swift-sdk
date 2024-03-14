@@ -11,44 +11,79 @@ import XCTest
 final class EventCacheTests: XCTestCase {
     let cache = EventCache()
 
-    override func setUpWithError() throws {
-        self.cache.clear()
+    override func setUp() async throws {
+        await self.cache.clear()
     }
 
-    func testSaving() throws {
-        self.cache.add(event: AppFitEvent(name: "test"))
+    func testSaving() async {
+        let expectation = expectation(description: "Test Saving")
 
-        XCTAssertEqual(self.cache.events.count, 1)
+        Task {
+            await self.cache.add(event: AppFitEvent(name: "test"))
+            let value = await self.cache.events.count
+
+            XCTAssertEqual(value, 1)
+            expectation.fulfill()
+        }
+
+
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 
-    func testSavingMultiple() throws {
-        self.cache.add(event: AppFitEvent(name: "test 1"))
-        self.cache.add(event: AppFitEvent(name: "test 2"))
-        self.cache.add(event: AppFitEvent(name: "test 3"))
-        self.cache.add(event: AppFitEvent(name: "test 4"))
+    func testSavingMultiple() async {
+        let expectation = expectation(description: "Test Saving Multiple")
 
-        XCTAssertEqual(self.cache.events.count, 4)
+        Task {
+            await self.cache.add(event: AppFitEvent(name: "test 1"))
+            await self.cache.add(event: AppFitEvent(name: "test 2"))
+            await self.cache.add(event: AppFitEvent(name: "test 3"))
+            await self.cache.add(event: AppFitEvent(name: "test 4"))
+            let value = await self.cache.events.count
+
+            XCTAssertEqual(value, 4)
+            expectation.fulfill()
+        }
+
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 
-    func testRemoveByEvent() throws {
-        let event = AppFitEvent(name: "test")
-        self.cache.add(event: event)
+    func testRemoveByEvent() async {
+        let expectation = expectation(description: "Test Remove by Event")
 
-        XCTAssertEqual(self.cache.events.count, 1)
+        Task {
+            let event = AppFitEvent(name: "test")
+            await self.cache.add(event: event)
+            
+            let savedCount = await self.cache.events.count
+            XCTAssertEqual(savedCount, 1)
 
-        self.cache.remove(event: event)
+            await self.cache.remove(event: event)
+            let removedCount = await self.cache.events.count
 
-        XCTAssertEqual(self.cache.events.count, 0)
+            XCTAssertEqual(removedCount, 0)
+            expectation.fulfill()
+        }
+
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 
-    func testRemoveById() throws {
-        let event = AppFitEvent(name: "test")
-        self.cache.add(event: event)
+    func testRemoveById() async {
+        let expectation = expectation(description: "Test Remove by Id")
 
-        XCTAssertEqual(self.cache.events.count, 1)
+        Task {
+            let event = AppFitEvent(name: "test")
+            await self.cache.add(event: event)
+            let savedCount = await self.cache.events.count
 
-        self.cache.remove(id: event.id.uuidString)
+            XCTAssertEqual(savedCount, 1)
 
-        XCTAssertEqual(self.cache.events.count, 0)
+            await self.cache.remove(id: event.id.uuidString)
+            let removedCount = await self.cache.events.count
+
+            XCTAssertEqual(removedCount, 0)
+            expectation.fulfill()
+        }
+
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 }

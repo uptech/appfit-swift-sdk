@@ -13,7 +13,7 @@ import Foundation
  *   - name: The name of the event
  *   - properties: The properties of the event
  */
-public struct AppFitEvent: Codable {
+public struct AppFitEvent: Codable, Sendable {
     /// The unique identifier for the event
     internal let id: UUID
 

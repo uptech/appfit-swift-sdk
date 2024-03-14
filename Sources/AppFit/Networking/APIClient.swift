@@ -28,7 +28,7 @@ internal struct APIClient {
      * - Parameters:
      *   - event: The event to send.
      */
-    internal func sendEvent(_ event: RawMetricEvent, completed: @escaping @Sendable (Bool) -> Void) {
+    internal func sendEvent(_ event: RawMetricEvent) async throws -> Bool {
         let url = URL(string: "https://api.appfit.io/v1/metric")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -36,25 +36,27 @@ internal struct APIClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(self.apiKey)", forHTTPHeaderField: "Authorization")
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Error sending event: \(error)")
-                completed(false)
-                return
-            }
+        return try await withCheckedThrowingContinuation { continuation in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("Error sending event: \(error)")
+                    continuation.resume(returning: false)
+                    return
+                }
 
-            guard let response = response as? HTTPURLResponse else {
-                print("Event sent error")
-                completed(false)
-                return
+                guard let response = response as? HTTPURLResponse else {
+                    print("Event sent error")
+                    continuation.resume(returning: false)
+                    return
+                }
+                guard (200..<300).contains(response.statusCode) else {
+                    print("Event sent error")
+                    continuation.resume(returning: false)
+                    return
+                }
+                continuation.resume(returning: true)
             }
-            guard (200..<300).contains(response.statusCode) else {
-                print("Event sent error")
-                completed(false)
-                return
-            }
-            completed(true)
+            task.resume()
         }
-        task.resume()
     }
 }

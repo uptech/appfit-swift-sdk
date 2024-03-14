@@ -10,7 +10,7 @@ import Foundation
 /**
  * EventCache caches events that have been or need to be tracked.
  */
-internal class EventCache {
+internal actor EventCache {
     private var cache: [String: AppFitEvent] = [:]
 
     /**

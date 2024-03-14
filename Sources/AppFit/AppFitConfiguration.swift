@@ -14,7 +14,7 @@ import Foundation
  * - Parameters:
  *   - apiKey: The API key provided by AppFit.
  */
-public struct AppFitConfiguration: Codable {
+public struct AppFitConfiguration: Codable, Sendable {
     /// The API key provided by AppFit.
     internal let apiKey: String
 
