@@ -9,7 +9,18 @@ import Foundation
 
 /**
  * AppFit handles all of the event tracking for the AppFit dashboard.
- * To use the AppFit SDK, you must first initialize it with an AppFitConfiguration.
+ *
+ * To use the AppFit SDK, you must first initialize it with an ``AppFitConfiguration``.
+ *
+ * Example:
+ * ```swift
+ * let configuration = AppFitConfiguration(apiKey: "<key>")
+ * let appFit = AppFit(configuration: configuration)
+ *
+ * // Tracking events
+ * appFit.trackEvent(name: "event_name")
+ * ```
+ *
  * - Parameters:
  *   - configuration: The configuration for the AppFit SDK.
  */
@@ -22,6 +33,7 @@ public struct AppFit: Sendable {
 
     /**
      * Initializes the AppFit SDK with the provided configuration.
+     *
      * - Parameters:
      *   - configuration: The configuration for the AppFit SDK.
      */
@@ -35,8 +47,14 @@ public struct AppFit: Sendable {
     }
 
     /**
-     * Tracks an event with the provided eventName and properties.
+     * Tracks an event with the provided name and properties.
+     *
      * This is used to track events in the AppFit dashboard.
+     *
+     * > Warning: All properties are string based. If you have any other types
+     * > of values that you would like included, it would have to be converted to
+     * > a string.
+     *
      * - Parameters:
      *   - name: The name of the event.
      *   - properties: The properties of the event.
@@ -47,7 +65,11 @@ public struct AppFit: Sendable {
 
     /**
      * Tracks an event with the provided event.
+     *
      * This is used to track events in the AppFit dashboard.
+     * A event must be an ``AppFitEvent`` and conform to the
+     * parameters available on the class.
+     *
      * - Parameters:
      *   - event: The event to track.
      */
@@ -57,9 +79,11 @@ public struct AppFit: Sendable {
 
     /**
      * Identifies the user with the provided userId.
+     *
      * This is used to identify the user in the AppFit dashboard.
      * If the userId is `nil`, the user will be un-identified,
      * resulting in the user being anonymous.
+     *
      * - Parameters:
      *   - userId: The unique identifier for the user.
      */

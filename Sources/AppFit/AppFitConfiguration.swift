@@ -11,6 +11,12 @@ import Foundation
  * Configuration for the AppFit SDK.
  * 
  * This is used to initialize the SDK with the apiKey provided by AppFit.
+ *
+ * Example:
+ * ```swift
+ * let configuration = AppFitConfiguration(apiKey: "<key>")
+ * ```
+ *
  * - Parameters:
  *   - apiKey: The API key provided by AppFit.
  */

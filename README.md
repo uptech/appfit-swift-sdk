@@ -12,7 +12,7 @@ AppFit allows you to quickly, and easily track your analytic events from your ap
 
 ## Features
 
-AppFit currenly supports Event Tracking. Other features will be coming soon.
+AppFit currenly supports Event Tracking and User Identification. Other features will be coming soon.
 
 ## Getting started
 

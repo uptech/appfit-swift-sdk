@@ -8,7 +8,16 @@ Before you can start tracking events, you have to grab your API Key from your Ap
 
 ## Installing
 
-Add some notes here abuot installing
+Use Swift Package Manager to install RepresentableKit.
+
+Use Xcode and add this repository as a dependency.
+Alternatively, add this repository as a dependency to your Package.swift.
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/uptech/appfit_sdk_swift.git", .upToNextMajor(from: "1.0.0"))
+]
+```
 
 ## Configuration
 
