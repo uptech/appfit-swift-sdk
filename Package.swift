@@ -7,17 +7,12 @@ let package = Package(
     name: "AppFit",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "AppFit",
-            targets: ["AppFit"]),
+        .library(name: "AppFit", targets: ["AppFit"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "AppFit"),
-        .testTarget(
-            name: "AppFitTests",
-            dependencies: ["AppFit"]),
+        .target(name: "AppFit"),
+        .testTarget(name: "AppFitTests", dependencies: ["AppFit"]),
     ]
 )
