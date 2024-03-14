@@ -35,7 +35,9 @@ internal class AppFitCache {
     @discardableResult
     internal func generateAnonymousId() -> String {
         let id = UUID().uuidString
-        guard self.anonymousId == nil else { return id }
+        let currentId = UserDefaults.standard.string(forKey: "anonymousId")
+        guard currentId == nil else { return id }
+        guard currentId == nil else { return id }
         UserDefaults.standard.setValue(id, forKey: "anonymousId")
         return id
     }

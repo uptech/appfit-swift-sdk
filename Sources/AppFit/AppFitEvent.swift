@@ -34,7 +34,7 @@ public struct AppFitEvent: Codable {
      */
     public init(
         name: String,
-        properties: [String : String]?
+        properties: [String : String]? = nil
     ) {
         self.id = UUID()
         self.date = Date()

@@ -2,7 +2,12 @@ import XCTest
 @testable import AppFit
 
 final class AppFitTests: XCTestCase {
-    func testExample() throws {
-        
+    let apiKey = "cHJvamVjdElkOmFwaUtleQ=="
+    var appFit: AppFit {
+        AppFit(configuration: AppFitConfiguration(apiKey: apiKey))
+    }
+
+    func testInitialization() throws {
+        XCTAssertEqual(appFit.configuration.apiKey, apiKey)
     }
 }
