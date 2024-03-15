@@ -3,11 +3,14 @@ import XCTest
 
 final class AppFitTests: XCTestCase {
     let apiKey = "cHJvamVjdElkOmFwaUtleQ=="
-    var appFit: AppFit {
-        AppFit(configuration: AppFitConfiguration(apiKey: apiKey))
-    }
 
     func testInitialization() throws {
+        let appFit = AppFit(configuration: AppFitConfiguration(apiKey: self.apiKey))
+        XCTAssertEqual(appFit.configuration.apiKey, apiKey)
+    }
+
+    func testConvenienceInitialization() throws {
+        let appFit = AppFit(apiKey: self.apiKey)
         XCTAssertEqual(appFit.configuration.apiKey, apiKey)
     }
 }

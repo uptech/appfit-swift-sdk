@@ -32,7 +32,24 @@ public struct AppFit: Sendable {
     private let eventDigester: EventDigester
 
     /**
+     * Initializes the AppFit SDK with an API Key
+     *
+     * This is a convenience helper to quickly create a new AppFit
+     * instance
+     *
+     * - Parameters:
+     *   - apiKey: The API Key for the ``AppFitConfiguration``
+     */
+    public init(apiKey: String) {
+        self.init(configuration: AppFitConfiguration(apiKey: apiKey))
+    }
+
+    /**
      * Initializes the AppFit SDK with the provided configuration.
+     *
+     * A configuration allows customization of the instance.
+     * Refer to the ``AppFitConfiguration`` documentation to review
+     * all options.
      *
      * - Parameters:
      *   - configuration: The configuration for the AppFit SDK.
