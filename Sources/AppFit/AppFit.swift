@@ -59,7 +59,7 @@ public struct AppFit: Sendable {
      *   - name: The name of the event.
      *   - properties: The properties of the event.
      */
-    public func trackEvent(name: String, properties: [String: String]?) {
+    public func trackEvent(name: String, properties: [String: String]? = nil) {
         self.track(event: AppFitEvent(name: name, properties: properties))
     }
 
