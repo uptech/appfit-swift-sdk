@@ -29,12 +29,12 @@ internal struct APIClient {
      *   - event: The event to send.
      */
     internal func sendEvent(_ event: RawMetricEvent) async throws -> Bool {
-        let url = URL(string: "https://api.appfit.io/v1/metric")!
+        let url = URL(string: "https://api.appfit.io/metric-events")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = try? JSONEncoder().encode(event)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(self.apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("Basic \(self.apiKey)", forHTTPHeaderField: "Authorization")
 
         return try await withCheckedThrowingContinuation { continuation in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
