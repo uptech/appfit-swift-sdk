@@ -13,6 +13,9 @@ import Foundation
  *   - apiKey: The API key provided by AppFit.
  */
 internal struct APIClient {
+    /// The JSON Encoder
+    private let encoder = JSONEncoder()
+
     /// The API key provided by AppFit.
     internal let apiKey: String
 
@@ -31,10 +34,10 @@ internal struct APIClient {
     internal func sendEvent(_ event: RawMetricEvent) async throws -> Bool {
         let url = URL(string: "https://api.appfit.io/metric-events")!
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = try? JSONEncoder().encode(event)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Basic \(self.apiKey)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+        request.httpBody = try? self.encoder.encode(event)
 
         return try await withCheckedThrowingContinuation { continuation in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
