@@ -13,7 +13,7 @@ import Foundation
 internal struct RawMetricEvent: Codable {
     /// The time the event occurred.
     ///
-    /// This is a UTC timestamp.
+    /// This is a UTC timestamp in ISO-8601 format.
     internal let occurredAt: Date
 
     /// The event payload.

@@ -9,6 +9,10 @@ import XCTest
 @testable import AppFit
 
 final class APIClientTests: XCTestCase {
+    let client = APIClient(
+        apiKey: "YjZiODczMjItNTAwNC00YTg5LTg2ZTUtOWI3OWE5ZDA5Mjc3OmQ3OGMyMjVhLTc1YzQtNDY5ZC1iZTk5LTY3ZTZiMWM1ZDI5YQ=="
+    )
+
     func testSendingEvent() async throws {
         let event = RawMetricEvent(
             occurredAt: Date(),
@@ -21,11 +25,7 @@ final class APIClientTests: XCTestCase {
                 systemProperties: nil
             )
         )
-
-        let client = APIClient(
-            apiKey: "YjZiODczMjItNTAwNC00YTg5LTg2ZTUtOWI3OWE5ZDA5Mjc3OmQ3OGMyMjVhLTc1YzQtNDY5ZC1iZTk5LTY3ZTZiMWM1ZDI5YQ=="
-        )
-        let result = try await client.sendEvent(event)
+        let result = try await self.client.sendEvent(event)
 
         XCTAssertTrue(result)
     }

@@ -8,7 +8,8 @@ AppFit allows you to quickly, and easily track your analytic events from your ap
 - watchOS
 - tvOS
 - visionOS
-- Linux
+
+Linux is untested, but since this is a pure swift library, it should work. Use at your own risk.
 
 ## Features
 

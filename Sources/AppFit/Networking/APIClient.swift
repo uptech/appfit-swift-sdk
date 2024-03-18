@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Network
 
-/** 
+/**
  * A client for sending events to the AppFit API.
  * - Parameters:
  *   - apiKey: The API key provided by AppFit.
@@ -21,6 +22,12 @@ internal struct APIClient {
 
     /// The base URL of the request
     internal let baseUrl: URL
+
+    /// Network Monitoring Queue
+    let queue = DispatchQueue(label: "NetworkMonitor")
+
+    /// Network Monitor
+    let monitor = NWPathMonitor()
 
     /** Initializes a new APIClient with the provided API key.
      * - Parameters:
@@ -36,13 +43,27 @@ internal struct APIClient {
 
         self.encoder = JSONEncoder()
         self.encoder.dateEncodingStrategy = .iso8601
+
+        self.monitor.pathUpdateHandler = { path in
+            switch path.status {
+            case .satisfied: print("Internet connection is available.")
+            case .unsatisfied: print("Internet connection is not available.")
+            case .requiresConnection: print("Internet connection is not available. Asking for connection.")
+            @unknown default: print("Unknown state of the internet connection")
+            }
+        }
+        self.monitor.start(queue: self.queue)
     }
-    
+
     /** Sends an event to the AppFit API.
      * - Parameters:
      *   - event: The event to send.
      */
     internal func sendEvent(_ event: RawMetricEvent) async throws -> Bool {
+        guard self.monitor.currentPath.status == .satisfied else {
+            return false
+        }
+
         let url = URL(string: "/metric-events", relativeTo: self.baseUrl)!
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

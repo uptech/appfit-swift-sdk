@@ -28,7 +28,8 @@ internal final class EventDigester: Sendable {
     internal init(apiKey: String) {
         self.apiKey = apiKey
         self.apiClient = APIClient(apiKey: apiKey)
-        Task.detached {
+        
+        Task {
             await self.appFitCache.generateAnonymousId()
         }
 
@@ -45,12 +46,14 @@ internal final class EventDigester: Sendable {
     /// otherwise it will be retried later.
     internal func digest(event: AppFitEvent) {
         Task.detached {
-            await self.cache.add(event: event)
             let rawMetric = await event.convertToRawMetricEvent(userId: self.appFitCache.userId, anonymousId: self.appFitCache.anonymousId)
             let result = try await self.apiClient.sendEvent(rawMetric)
-            if result {
-                // If the network requests succeeds, remove the event from the cache
-                await self.cache.remove(event: event)
+
+            // If the network requests succeeds, remove the event from the cache
+            // otherwise, we want to add it to the cache
+            switch result {
+            case true: await self.cache.remove(event: event)
+            case false: await self.cache.add(event: event)
             }
         }
     }
