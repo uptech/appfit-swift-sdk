@@ -29,4 +29,21 @@ final class APIClientTests: XCTestCase {
 
         XCTAssertTrue(result)
     }
+
+    func testSendingBatchEvents() async throws {
+        let event = RawMetricEvent(
+            occurredAt: Date(),
+            payload: MetricEvent(
+                eventId: UUID(),
+                name: "unit_test",
+                userId: nil,
+                anonymousId: "xcode_75fbf7a3-2197-4353-9b39-baedf4628c68",
+                properties: ["language": "swift"],
+                systemProperties: nil
+            )
+        )
+        let result = try await self.client.sendEvents([event])
+
+        XCTAssertTrue(result)
+    }
 }

@@ -99,4 +99,49 @@ internal struct APIClient {
             task.resume()
         }
     }
+
+    /** Sends an event to the AppFit API.
+     * - Parameters:
+     *   - event: The event to send.
+     */
+    internal func sendEvents(_ events: [RawMetricEvent]) async throws -> Bool {
+        guard self.monitor.currentPath.status == .satisfied else {
+            return false
+        }
+
+        let url = URL(string: "/metric-events/batch", relativeTo: self.baseUrl)!
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Basic \(self.apiKey)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+        do {
+            request.httpBody = try self.encoder.encode(BatchRawMetricEvents(events: events))
+        } catch {
+            print("Error encoding payload: \(error)")
+            return false
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("Batch Error sending event: \(error)")
+                    continuation.resume(returning: false)
+                    return
+                }
+
+                guard let response = response as? HTTPURLResponse else {
+                    print("Batch Event sent error: Invalid Response")
+                    continuation.resume(returning: false)
+                    return
+                }
+                guard (200..<300).contains(response.statusCode) else {
+                    print("Batch Event sent error: Bad Status Code")
+                    continuation.resume(returning: false)
+                    return
+                }
+                continuation.resume(returning: true)
+            }
+            task.resume()
+        }
+    }
 }

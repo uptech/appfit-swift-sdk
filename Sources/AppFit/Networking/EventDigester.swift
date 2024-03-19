@@ -75,8 +75,16 @@ internal final class EventDigester: Sendable {
     /// or are pending to be sent to the AppFit dashboard.
     internal func digestCache() {
         Task.detached {
-            await self.cache.events.forEach { value in
-                self.digest(event: value)
+            let cachedEvents = await self.cache.events
+            let userId = await self.appFitCache.userId
+            let anonymousId = await self.appFitCache.anonymousId
+            let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId) })
+            let result = try await self.apiClient.sendEvents(rawEvents)
+
+            // If the network requests succeeds, remove all the events from cache
+            switch result {
+            case true: await self.cache.clear()
+            case false: break // For now, we just do nothing.
             }
         }
     }
