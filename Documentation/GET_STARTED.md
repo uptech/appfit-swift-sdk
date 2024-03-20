@@ -1,6 +1,6 @@
 # AppFit for Swift
 
-The Flutter SDK allows you to drop-in analytic tracking, direct to your AppFit project.
+The Swift SDK allows you to drop-in analytic tracking, direct to your AppFit project.
 
 ## Getting Started
 

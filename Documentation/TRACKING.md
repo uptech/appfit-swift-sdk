@@ -15,16 +15,14 @@ A full example can be found below.
 ```swift
 import AppFit;
 
-void main() {
-    // Create the AppFitConfiguration
-    let configuration = AppFitConfiguration(apiKey: "<key>")
+// Create the AppFitConfiguration
+let configuration = AppFitConfiguration(apiKey: "<key>")
 
-    // Create the AppFit Client
-    let appFit = AppFit(configuration: configuration)
+// Create the AppFit Client
+let appFit = AppFit(configuration: configuration)
 
-    // Use the client to track events
-    appFit.trackEvent(name: "event_name", properties: {"key": "value"})
-}
+// Use the client to track events
+appFit.trackEvent(name: "event_name", properties: {"key": "value"})
 ```
 
 ## Identifying Users
