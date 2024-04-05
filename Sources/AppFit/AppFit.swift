@@ -68,15 +68,11 @@ public struct AppFit: Sendable {
      *
      * This is used to track events in the AppFit dashboard.
      *
-     * > Warning: All properties are string based. If you have any other types
-     * > of values that you would like included, it would have to be converted to
-     * > a string.
-     *
      * - Parameters:
      *   - name: The name of the event.
      *   - properties: The properties of the event.
      */
-    public func trackEvent(name: String, properties: [String: String]? = nil) {
+    public func trackEvent(name: String, properties: [String: Any]? = nil) {
         self.track(event: AppFitEvent(name: name, properties: properties))
     }
 

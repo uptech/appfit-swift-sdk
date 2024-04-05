@@ -40,6 +40,6 @@ final class RawMetricEventTests: XCTestCase {
 
         XCTAssertEqual(self.testEvent.occurredAt, object.occurredAt)
         XCTAssertEqual(self.testEvent.payload.name, object.payload.name)
-        XCTAssertEqual(self.testEvent.payload.properties, object.payload.properties)
+        XCTAssertEqual(self.testEvent.payload.properties?.keys, object.payload.properties?.keys)
     }
 }

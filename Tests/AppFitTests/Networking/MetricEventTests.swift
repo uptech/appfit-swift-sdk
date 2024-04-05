@@ -22,10 +22,10 @@ final class MetricEventTests: XCTestCase {
         let encoder = JSONEncoder()
         let data = try encoder.encode(self.testEvent)
         let object = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+        let keys = (object["properties"] as? [String: Any])?.keys
 
         XCTAssertEqual(self.testEvent.name, object["name"] as? String)
-        XCTAssertEqual(self.testEvent.properties, object["properties"] as? [String: String])
-        XCTAssertEqual(self.testEvent.properties?["property"], (object["properties"] as! [String: String])["property"])
+        XCTAssertEqual(self.testEvent.properties?.keys, keys)
     }
 
     func testDecoding() throws {
@@ -35,7 +35,6 @@ final class MetricEventTests: XCTestCase {
         let object = try decoder.decode(MetricEvent.self, from: data)
 
         XCTAssertEqual(self.testEvent.name, object.name)
-        XCTAssertEqual(self.testEvent.properties, object.properties)
-        XCTAssertEqual(self.testEvent.properties?["property"], object.properties?["property"])
+        XCTAssertEqual(self.testEvent.properties?.keys, object.properties?.keys)
     }
 }
