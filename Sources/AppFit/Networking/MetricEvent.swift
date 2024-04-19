@@ -12,6 +12,7 @@ import Foundation
  */
 internal struct MetricEvent: Codable {
     enum CodingKeys: String, CodingKey {
+        case origin
         case eventId
         case name
         case userId
@@ -19,6 +20,9 @@ internal struct MetricEvent: Codable {
         case properties
         case systemProperties
     }
+
+    /// The origin (source) of where the event came from
+    internal let origin: String
 
     /// The unique identifier for the event.
     internal let eventId: UUID
@@ -46,6 +50,7 @@ internal struct MetricEvent: Codable {
         properties: [String : Any]? = nil,
         systemProperties: [String : Any]? = nil
     ) {
+        self.origin = "swift"
         self.eventId = eventId
         self.name = name
         self.userId = userId
@@ -56,6 +61,7 @@ internal struct MetricEvent: Codable {
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.origin = try values.decode(String.self, forKey: .origin)
         self.eventId = try values.decode(UUID.self, forKey: .eventId)
         self.name = try values.decode(String.self, forKey: .name)
         self.userId = try values.decodeIfPresent(String.self, forKey: .userId)
@@ -66,6 +72,7 @@ internal struct MetricEvent: Codable {
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.origin, forKey: .origin)
         try container.encode(self.eventId, forKey: .eventId)
         try container.encode(self.name, forKey: .name)
         try container.encode(self.userId, forKey: .userId)
