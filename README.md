@@ -17,7 +17,7 @@ AppFit currenly supports Event Tracking and User Identification. Other features 
 
 ## Getting started
 
-To get started, simply follow the [Get Started](Documentation/GET_STARTED.md) guide.
+To get started, simply follow the [Get Started](http://developer.appfit.io/swift/) guide at the AppFit Developer Center.
 
 ## Additional information
 
