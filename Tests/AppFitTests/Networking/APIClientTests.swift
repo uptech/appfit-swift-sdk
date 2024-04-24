@@ -22,7 +22,7 @@ final class APIClientTests: XCTestCase {
                 userId: nil,
                 anonymousId: "xcode_75fbf7a3-2197-4353-9b39-baedf4628c68",
                 properties: ["language": "swift"],
-                systemProperties: nil
+                systemProperties: ["origin": "swift"]
             )
         )
         let result = try await self.client.sendEvent(event)
@@ -39,7 +39,7 @@ final class APIClientTests: XCTestCase {
                 userId: nil,
                 anonymousId: "xcode_75fbf7a3-2197-4353-9b39-baedf4628c68",
                 properties: ["language": "swift"],
-                systemProperties: nil
+                systemProperties: ["origin": "swift"]
             )
         )
         let result = try await self.client.sendEvents([event])

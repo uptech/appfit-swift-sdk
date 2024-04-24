@@ -42,4 +42,12 @@ final class RawMetricEventTests: XCTestCase {
         XCTAssertEqual(self.testEvent.payload.name, object.payload.name)
         XCTAssertEqual(self.testEvent.payload.properties?.keys, object.payload.properties?.keys)
     }
+
+    func testAppFitEventToRawEvent() throws {
+        let event = AppFitEvent(name: "test", properties: ["key": "value"])
+        let rawEvent = event.convertToRawMetricEvent(userId: nil, anonymousId: nil)
+
+        XCTAssertEqual(event.name, rawEvent.payload.name)
+        XCTAssertEqual(rawEvent.payload.systemProperties?["origin"] as? String, "swift")
+    }
 }
