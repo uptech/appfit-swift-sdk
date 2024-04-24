@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol Digestable: Sendable {
+public protocol Digestible: Sendable {
     func digest(event: AppFitEvent)
     func identify(userId: String?)
 }
@@ -16,7 +16,7 @@ public protocol Digestable: Sendable {
  * EventDigester takes in events, and handles the caching, posting, and
  * retrying of failed events.
  */
-internal final class EventDigester: Digestable {
+internal final class EventDigester: Digestible {
     /// The API key for the project.
     internal let apiKey: String
 

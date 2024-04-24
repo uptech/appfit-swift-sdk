@@ -1,7 +1,7 @@
 import XCTest
 @testable import AppFit
 
-final class EventDigesterStub: Digestable {
+final class EventDigesterStub: Digestible {
     let digestExpectation: XCTestExpectation?
     let identifyExpectation: XCTestExpectation?
 
