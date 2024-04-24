@@ -29,7 +29,7 @@ public struct AppFit: Sendable {
     internal let configuration: AppFitConfiguration
 
     /// The event digester for the AppFit SDK.
-    private let eventDigester: EventDigester
+    private let eventDigester: Digestable
 
     /**
      * Initializes the AppFit SDK with an API Key
@@ -53,10 +53,11 @@ public struct AppFit: Sendable {
      *
      * - Parameters:
      *   - configuration: The configuration for the AppFit SDK.
+     *   - digester: The EventDigester (used for overriding in tests)
      */
-    public init(configuration: AppFitConfiguration) {
+    public init(configuration: AppFitConfiguration, digester: Digestable? = nil) {
         self.configuration = configuration
-        self.eventDigester = EventDigester(apiKey: configuration.apiKey)
+        self.eventDigester = digester ?? EventDigester(apiKey: configuration.apiKey)
         // Once we boot up the AppFit SDK, we need to generate an anonymousId
         // and set the userId to null. This is to ensure that we have the most
         // up-to-date information for the events.
