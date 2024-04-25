@@ -25,19 +25,16 @@ internal actor AppFitCache {
     /// The current cached anonymousId.
     /// This will generate one if one doesnt exist.
     internal var anonymousId: String? {
-        let id = UserDefaults.standard.string(forKey: "anonymousId")
-        guard id == nil else { return id }
-        return self.generateAnonymousId()
+        guard let currentId = UserDefaults.standard.string(forKey: "anonymousId") else {
+            let id = self.generateAnonymousId()
+            UserDefaults.standard.setValue(id, forKey: "anonymousId")
+            return id
+        }
+        return currentId
     }
 
     /// Generates and saves the new id to UserDefaults
-    @discardableResult
-    internal func generateAnonymousId() -> String {
-        let id = UUID().uuidString
-        let currentId = UserDefaults.standard.string(forKey: "anonymousId")
-        guard currentId == nil else { return id }
-        guard currentId == nil else { return id }
-        UserDefaults.standard.setValue(id, forKey: "anonymousId")
-        return id
+    private func generateAnonymousId() -> String {
+        return UUID().uuidString
     }
 }

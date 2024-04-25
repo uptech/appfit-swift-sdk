@@ -16,7 +16,7 @@ public protocol Digestible: Sendable {
  * EventDigester takes in events, and handles the caching, posting, and
  * retrying of failed events.
  */
-internal final class EventDigester: Digestible {
+internal struct EventDigester: Digestible {
     /// The API key for the project.
     internal let apiKey: String
 
@@ -33,12 +33,8 @@ internal final class EventDigester: Digestible {
     internal init(apiKey: String) {
         self.apiKey = apiKey
         self.apiClient = APIClient(apiKey: apiKey)
-        
-        Task {
-            await self.appFitCache.generateAnonymousId()
-        }
 
-        Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { _ in
+        Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { [self] _ in
             self.digestCache()
         }
     }
