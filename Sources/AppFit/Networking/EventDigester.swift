@@ -42,18 +42,16 @@ internal struct EventDigester: Digestible {
     /// Digests the provided `event`.
     ///
     /// This is used to digest the provided `event` and send it to the AppFit dashboard.
-    /// Before any event is sent to the AppFit dashboard, it is first added to the cache.
-    /// If the event is successfully sent to the AppFit dashboard, it is removed from the cache,
-    /// otherwise it will be retried later.
+    /// The event is sent directly to AppFit. If it fails, we add it to the cache, and
+    /// wait for the digester to perform the batch send of cached events.
     internal func digest(event: AppFitEvent) {
         Task.detached {
             let rawMetric = await event.convertToRawMetricEvent(userId: self.appFitCache.userId, anonymousId: self.appFitCache.anonymousId)
             let result = try await self.apiClient.sendEvent(rawMetric)
 
             // If the network requests succeeds, remove the event from the cache
-            // otherwise, we want to add it to the cache
             switch result {
-            case true: await self.cache.remove(event: event)
+            case true: break // For now, we just do nothing.
             case false: await self.cache.add(event: event)
             }
         }
