@@ -50,7 +50,7 @@ internal actor EventCache {
     /// On deinitialization we want to clean up
     deinit {
         // Clean up and write everything to disk
-        Task.detached {
+        Task {
             await self.writeDataToDisk()
         }
     }

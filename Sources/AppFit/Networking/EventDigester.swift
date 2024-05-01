@@ -45,7 +45,7 @@ internal struct EventDigester: Digestible {
     /// The event is sent directly to AppFit. If it fails, we add it to the cache, and
     /// wait for the digester to perform the batch send of cached events.
     internal func digest(event: AppFitEvent) {
-        Task.detached {
+        Task {
             let rawMetric = await event.convertToRawMetricEvent(userId: self.appFitCache.userId, anonymousId: self.appFitCache.anonymousId)
             let result = try await self.apiClient.sendEvent(rawMetric)
 
@@ -63,7 +63,7 @@ internal struct EventDigester: Digestible {
     /// When passing is `nil`, the user will be un-identified,
     /// resulting in the user being anonymous.
     internal func identify(userId: String?) {
-        Task.detached {
+        Task {
             await self.appFitCache.setUserId(userId)
         }
     }
@@ -73,7 +73,7 @@ internal struct EventDigester: Digestible {
     /// This is used to digest all of the events in the cache that might have failed,
     /// or are pending to be sent to the AppFit dashboard.
     internal func digestCache() {
-        Task.detached {
+        Task {
             let cachedEvents = await self.cache.events
             let userId = await self.appFitCache.userId
             let anonymousId = await self.appFitCache.anonymousId
