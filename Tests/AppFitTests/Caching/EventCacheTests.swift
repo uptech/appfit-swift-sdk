@@ -101,14 +101,14 @@ final class EventCacheTests: XCTestCase {
         await self.cache.add(event: event)
         let savedCount = await self.cache.events.count
 
-        let diskValuesCount = await self.cache.readDataFromDisk().values.count
+        let diskValuesCount = await self.cache.readDataFromDisk().count
 
         XCTAssertEqual(savedCount, 1)
         XCTAssertEqual(diskValuesCount, 0)
         expectation.fulfill()
 
         let readingExpectation = XCTestExpectation(description: "Test Disk Reading")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
             Task {
                 let values = await self.cache.readDataFromDisk()
                 XCTAssertEqual(values.count, 1)

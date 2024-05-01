@@ -12,7 +12,7 @@ import Foundation
  */
 internal actor EventCache {
     /// Local in-memory cache
-    private var cache: [String: AppFitEvent] = [:]
+    private var cache: [AppFitEvent] = []
 
     /// Ininitializtion method
     ///
@@ -30,8 +30,6 @@ internal actor EventCache {
         // Repeat every 5 minutes
         Timer.scheduledTimer(withTimeInterval: writeToDiskInterval, repeats: true) { _ in
             Task {
-                // If we have tasks to write, lets write them to disk
-                guard await !self.cache.isEmpty else { return }
                 await self.save()
             }
         }
@@ -59,7 +57,7 @@ internal actor EventCache {
      * The events that have been cached.
      */
     internal var events: [AppFitEvent] {
-        return Array(self.cache.values)
+        return self.cache
     }
 
     /**
@@ -68,7 +66,7 @@ internal actor EventCache {
      *   - event: The event to add.
      */
     internal func add(event: AppFitEvent) {
-        self.cache[event.id.uuidString] = event
+        self.cache.append(event)
     }
 
     /**
@@ -77,7 +75,7 @@ internal actor EventCache {
      *   - id: The id of the event to remove.
      */
     internal func remove(id: String) {
-        self.cache.removeValue(forKey: id)
+        self.cache.removeAll(where: { $0.id.uuidString == id })
     }
 
     /**
@@ -101,15 +99,15 @@ internal actor EventCache {
 // MARK: Disk IO
 extension EventCache {
     /// Reads the data from disk
-    func readDataFromDisk() -> [String: AppFitEvent] {
+    func readDataFromDisk() -> [AppFitEvent] {
         do {
             let data = try Data(contentsOf: self.cachePath())
             let decoder = JSONDecoder()
             let cache = try decoder.decode([AppFitEvent].self, from: data)
-            return Dictionary(uniqueKeysWithValues: cache.map({ ($0.id.uuidString, $0) }))
+            return cache
         } catch {
             print("[EventCache] Error reading cache: \(error)")
-            return [:]
+            return []
         }
     }
 
@@ -117,7 +115,7 @@ extension EventCache {
     func writeDataToDisk() {
         do {
             let encoder = JSONEncoder()
-            let data = try encoder.encode(self.events)
+            let data = try encoder.encode(self.cache)
             try data.write(to: self.cachePath(), options: [.atomic])
         } catch {
             print("[EventCache] Error writing cache \(error)")
