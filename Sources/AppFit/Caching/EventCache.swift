@@ -66,6 +66,9 @@ internal actor EventCache {
      *   - event: The event to add.
      */
     internal func add(event: AppFitEvent) {
+        if self.cache.contains(event) {
+            self.remove(event: event)
+        }
         self.cache.append(event)
     }
 
