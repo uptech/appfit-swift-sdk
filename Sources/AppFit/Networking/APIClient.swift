@@ -44,6 +44,9 @@ internal struct APIClient {
         self.encoder = JSONEncoder()
         self.encoder.dateEncodingStrategy = .iso8601
 
+        /*
+         * Uncomment this if you need to debug network connecttivity
+         *
         self.monitor.pathUpdateHandler = { path in
             switch path.status {
             case .satisfied: print("Internet connection is available.")
@@ -52,6 +55,7 @@ internal struct APIClient {
             @unknown default: print("Unknown state of the internet connection")
             }
         }
+         */
         self.monitor.start(queue: self.queue)
     }
 
@@ -72,25 +76,21 @@ internal struct APIClient {
         do {
             request.httpBody = try self.encoder.encode(event)
         } catch {
-            print("Error encoding payload: \(error)")
             return false
         }
 
         return try await withCheckedThrowingContinuation { continuation in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 if let error = error {
-                    print("Error sending event: \(error)")
                     continuation.resume(returning: false)
                     return
                 }
 
                 guard let response = response as? HTTPURLResponse else {
-                    print("Event sent error")
                     continuation.resume(returning: false)
                     return
                 }
                 guard (200..<300).contains(response.statusCode) else {
-                    print("Event sent error")
                     continuation.resume(returning: false)
                     return
                 }
@@ -117,25 +117,21 @@ internal struct APIClient {
         do {
             request.httpBody = try self.encoder.encode(BatchRawMetricEvents(events: events))
         } catch {
-            print("Error encoding payload: \(error)")
             return false
         }
 
         return try await withCheckedThrowingContinuation { continuation in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 if let error = error {
-                    print("Batch Error sending event: \(error)")
                     continuation.resume(returning: false)
                     return
                 }
 
                 guard let response = response as? HTTPURLResponse else {
-                    print("Batch Event sent error: Invalid Response")
                     continuation.resume(returning: false)
                     return
                 }
                 guard (200..<300).contains(response.statusCode) else {
-                    print("Batch Event sent error: Bad Status Code")
                     continuation.resume(returning: false)
                     return
                 }

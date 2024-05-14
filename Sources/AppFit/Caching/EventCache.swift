@@ -109,7 +109,6 @@ extension EventCache {
             let cache = try decoder.decode([AppFitEvent].self, from: data)
             return cache
         } catch {
-            print("[EventCache] Error reading cache: \(error)")
             return []
         }
     }
@@ -121,7 +120,6 @@ extension EventCache {
             let data = try encoder.encode(self.cache)
             try data.write(to: self.cachePath(), options: [.atomic])
         } catch {
-            print("[EventCache] Error writing cache \(error)")
         }
     }
 
