@@ -26,24 +26,13 @@ internal struct SystemProperties: Codable {
     /// such as model, operating system version, platform, etc
     let device: DeviceProperties
 
-    /// All Network related properties
-    /// This includes information based on the IP Address
-    let network: NetworkProperties?
-
-    /// The Geolation Data for the IP Address
-    let location: LocationProperties?
-
     init(
         origin: String = "swift",
         appVersion: String? = App.current.version,
-        device: DeviceProperties = DeviceProperties.current,
-        network: NetworkProperties?,
-        location: LocationProperties?
+        device: DeviceProperties = DeviceProperties.current
     ) {
         self.origin = origin
         self.appVersion = appVersion
         self.device = device
-        self.network = network
-        self.location = location
     }
 }

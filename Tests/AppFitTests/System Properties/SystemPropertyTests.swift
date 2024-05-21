@@ -11,20 +11,7 @@ import XCTest
 final class SystemPropertyTests: XCTestCase {
     func testSystemProperties() throws {
         let properties = SystemProperties(
-            appVersion: "1.0.0",
-            network: NetworkProperties(
-                ip: "127.0.0.1"
-            ),
-            location: LocationProperties(
-                continent: "North America",
-                country: "United States of America",
-                countryCode: "USA",
-                region: "Florida",
-                city: "Sarasota",
-                postalCode: "34239",
-                latitude: 27.30810,
-                longitude: -82.50982
-            )
+            appVersion: "1.0.0"
         )
 
         XCTAssertEqual(properties.appVersion, "1.0.0")
@@ -41,32 +28,11 @@ final class SystemPropertyTests: XCTestCase {
         XCTAssertEqual(properties.device.operatingSystem, OperatingSystem.iOS)
         XCTAssertEqual(properties.device.operatingSystemVersion, "17.5")
         #endif
-
-        XCTAssertEqual(properties.network?.ip, "127.0.0.1")
-        XCTAssertEqual(properties.location?.continent, "North America")
-        XCTAssertEqual(properties.location?.country, "United States of America")
-        XCTAssertEqual(properties.location?.countryCode, "USA")
-        XCTAssertEqual(properties.location?.region, "Florida")
-        XCTAssertEqual(properties.location?.city, "Sarasota")
-        XCTAssertEqual(properties.location?.postalCode, "34239")
     }
 
     func testSystemPropertyEncoding() throws {
         let properties = SystemProperties(
-            appVersion: "1.0.0", 
-            network: NetworkProperties(
-                ip: "127.0.0.0"
-            ),
-            location: LocationProperties(
-                continent: "North America",
-                country: "United States of America",
-                countryCode: "USA",
-                region: "Florida",
-                city: "Sarasota",
-                postalCode: "34239",
-                latitude: 27.30810,
-                longitude: -82.50982
-            )
+            appVersion: "1.0.0"
         )
 
         let data = try JSONEncoder().encode(properties)

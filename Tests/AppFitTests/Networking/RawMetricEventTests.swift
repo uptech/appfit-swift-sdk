@@ -48,21 +48,7 @@ final class RawMetricEventTests: XCTestCase {
         let rawEvent = event.convertToRawMetricEvent(
             userId: nil,
             anonymousId: nil,
-            systemProperties: SystemProperties(
-                network: NetworkProperties(
-                    ip: "127.0.0.1"
-                ),
-                location: LocationProperties(
-                    continent: "North America",
-                    country: "United States of America",
-                    countryCode: "USA",
-                    region: "Florida",
-                    city: "Sarasota",
-                    postalCode: "34239",
-                    latitude: 27.30810,
-                    longitude: -82.50982
-                )
-            )
+            systemProperties: SystemProperties()
         )
 
         XCTAssertEqual(event.name, rawEvent.payload.name)

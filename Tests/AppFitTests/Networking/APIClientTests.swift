@@ -22,21 +22,7 @@ final class APIClientTests: XCTestCase {
                 userId: nil,
                 anonymousId: "xcode_75fbf7a3-2197-4353-9b39-baedf4628c68",
                 properties: ["language": "swift"],
-                systemProperties: SystemProperties(
-                    network: NetworkProperties(
-                        ip: "127.0.0.1"
-                    ),
-                    location: LocationProperties(
-                        continent: "North America",
-                        country: "United States of America",
-                        countryCode: "USA",
-                        region: "Florida",
-                        city: "Sarasota",
-                        postalCode: "34239",
-                        latitude: 27.30810,
-                        longitude: -82.50982
-                    )
-                )
+                systemProperties: SystemProperties()
             )
         )
         let result = try await self.client.sendEvent(event)
@@ -53,21 +39,7 @@ final class APIClientTests: XCTestCase {
                 userId: nil,
                 anonymousId: "xcode_75fbf7a3-2197-4353-9b39-baedf4628c68",
                 properties: ["language": "swift"],
-                systemProperties: SystemProperties(
-                    network: NetworkProperties(
-                        ip: "127.0.0.1"
-                    ),
-                    location: LocationProperties(
-                        continent: "North America",
-                        country: "United States of America",
-                        countryCode: "USA",
-                        region: "Florida",
-                        city: "Sarasota",
-                        postalCode: "34239",
-                        latitude: 27.30810,
-                        longitude: -82.50982
-                    )
-                )
+                systemProperties: SystemProperties()
             )
         )
         let result = try await self.client.sendEvents([event])
