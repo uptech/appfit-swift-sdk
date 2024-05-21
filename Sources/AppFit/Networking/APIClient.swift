@@ -81,7 +81,7 @@ internal struct APIClient {
 
         return try await withCheckedThrowingContinuation { continuation in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
+                if let _ = error {
                     continuation.resume(returning: false)
                     return
                 }
@@ -122,7 +122,7 @@ internal struct APIClient {
 
         return try await withCheckedThrowingContinuation { continuation in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
+                if let _ = error {
                     continuation.resume(returning: false)
                     return
                 }

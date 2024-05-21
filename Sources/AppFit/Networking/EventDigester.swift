@@ -46,7 +46,11 @@ internal struct EventDigester: Digestible {
     /// wait for the digester to perform the batch send of cached events.
     internal func digest(event: AppFitEvent) {
         Task {
-            let rawMetric = await event.convertToRawMetricEvent(userId: self.appFitCache.userId, anonymousId: self.appFitCache.anonymousId)
+            let rawMetric = await event.convertToRawMetricEvent(
+                userId: self.appFitCache.userId,
+                anonymousId: self.appFitCache.anonymousId,
+                systemProperties: self.fetchAllSystemProperties()
+            )
             let result = try await self.apiClient.sendEvent(rawMetric)
 
             // If the network requests succeeds, remove the event from the cache
@@ -77,7 +81,8 @@ internal struct EventDigester: Digestible {
             let cachedEvents = await self.cache.events
             let userId = await self.appFitCache.userId
             let anonymousId = await self.appFitCache.anonymousId
-            let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId) })
+            let systemProperties = await self.fetchAllSystemProperties()
+            let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId, systemProperties: systemProperties) })
             let result = try await self.apiClient.sendEvents(rawEvents)
 
             // If the network requests succeeds, remove all the events from cache
@@ -86,5 +91,11 @@ internal struct EventDigester: Digestible {
             case false: break // For now, we just do nothing.
             }
         }
+    }
+
+    /// Fetches all of the system properties for the device
+    internal func fetchAllSystemProperties() async -> SystemProperties {
+        // TODO: Implement the network and location properties.
+        return SystemProperties(network: nil, location: nil)
     }
 }

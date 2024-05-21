@@ -37,7 +37,7 @@ internal struct MetricEvent: Codable {
     internal let properties: [String: Any]?
 
     /// The system properties of the event.
-    internal let systemProperties: [String: Any]?
+    internal let systemProperties: SystemProperties?
 
     internal init(
         eventId: UUID,
@@ -45,7 +45,7 @@ internal struct MetricEvent: Codable {
         userId: String? = nil,
         anonymousId: String? = nil,
         properties: [String : Any]? = nil,
-        systemProperties: [String : Any]? = nil
+        systemProperties: SystemProperties? = nil
     ) {
         self.eventId = eventId
         self.name = name
@@ -62,7 +62,7 @@ internal struct MetricEvent: Codable {
         self.userId = try values.decodeIfPresent(String.self, forKey: .userId)
         self.anonymousId = try values.decodeIfPresent(String.self, forKey: .anonymousId)
         self.properties = try values.decodeIfPresent([String : Any].self, forKey: .properties)
-        self.systemProperties = try values.decodeIfPresent([String : Any].self, forKey: .systemProperties)
+        self.systemProperties = try values.decodeIfPresent(SystemProperties.self, forKey: .systemProperties)
     }
 
     func encode(to encoder: Encoder) throws {
