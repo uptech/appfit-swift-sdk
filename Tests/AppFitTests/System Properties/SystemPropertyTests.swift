@@ -10,28 +10,24 @@ import XCTest
 
 final class SystemPropertyTests: XCTestCase {
     func testSystemProperties() throws {
-        let properties = SystemProperties(
+        let properties = EventSystemProperties(
             appVersion: "1.0.0"
         )
 
         XCTAssertEqual(properties.appVersion, "1.0.0")
-        XCTAssertEqual(properties.device.platform, Platform.apple)
+        XCTAssertEqual(properties.device?.manufacturer, "Apple")
 
         #if os(macOS)
-        XCTAssertEqual(properties.device.family, DeviceFamily.mac)
-        XCTAssertEqual(properties.device.model, "MacBookPro18,4")
-        XCTAssertEqual(properties.device.operatingSystem, OperatingSystem.macOS)
-        XCTAssertEqual(properties.device.operatingSystemVersion, "14.4.1")
-        #else
-        XCTAssertEqual(properties.device.family, DeviceFamily.iPhone)
-        XCTAssertEqual(properties.device.model, "iPhone Simulator")
-        XCTAssertEqual(properties.device.operatingSystem, OperatingSystem.iOS)
-        XCTAssertEqual(properties.device.operatingSystemVersion, "17.5")
+        XCTAssertEqual(properties.operatingSystem?.name, OperatingSystemName.macOS)
+        XCTAssertEqual(properties.operatingSystem?.version, "14.4.1")
+        #elseif os(iOS)
+        XCTAssertEqual(properties.operatingSystem?.name, OperatingSystemName.iOS)
+        XCTAssertEqual(properties.operatingSystem?.version, "17.5")
         #endif
     }
 
     func testSystemPropertyEncoding() throws {
-        let properties = SystemProperties(
+        let properties = EventSystemProperties(
             appVersion: "1.0.0"
         )
 

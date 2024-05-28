@@ -48,8 +48,7 @@ internal struct EventDigester: Digestible {
         Task {
             let rawMetric = await event.convertToRawMetricEvent(
                 userId: self.appFitCache.userId,
-                anonymousId: self.appFitCache.anonymousId,
-                systemProperties: SystemProperties()
+                anonymousId: self.appFitCache.anonymousId
             )
             let result = try await self.apiClient.sendEvent(rawMetric)
 
@@ -81,7 +80,7 @@ internal struct EventDigester: Digestible {
             let cachedEvents = await self.cache.events
             let userId = await self.appFitCache.userId
             let anonymousId = await self.appFitCache.anonymousId
-            let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId, systemProperties: SystemProperties()) })
+            let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId) })
             let result = try await self.apiClient.sendEvents(rawEvents)
 
             // If the network requests succeeds, remove all the events from cache

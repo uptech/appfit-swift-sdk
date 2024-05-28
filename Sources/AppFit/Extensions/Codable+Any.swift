@@ -37,7 +37,7 @@ extension KeyedDecodingContainer {
     func decode(_ type: [String: Any].Type) throws -> [String: Any] {
         var dictionary = [String: Any]()
 
-        for key in allKeys {
+        for key in self.allKeys {
             if let boolValue = try? self.decode(Bool.self, forKey: key) {
                 dictionary[key.stringValue] = boolValue
             } else if let intValue = try? self.decode(Int.self, forKey: key) {
@@ -53,7 +53,7 @@ extension KeyedDecodingContainer {
             } else if let isValueNil = try? self.decodeNil(forKey: key), isValueNil == true {
                 dictionary[key.stringValue] = nil
             } else {
-                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath + [key], debugDescription: "Unable to decode value"))
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath + [key], debugDescription: "Unable to decode value"))
             }
         }
         return dictionary
@@ -90,7 +90,7 @@ extension UnkeyedDecodingContainer {
             } else if let isValueNil = try? self.decodeNil(), isValueNil == true {
                 array.append(Optional<Any>.none as Any)
             } else {
-                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Unable to decode value"))
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode value"))
             }
         }
         return array
@@ -168,7 +168,7 @@ extension UnkeyedEncodingContainer {
                 try self.encodeNil()
             default:
                 let keys = JSONCodingKeys(intValue: index).map({ [ $0 ] }) ?? []
-                throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: codingPath + keys, debugDescription: "Invalid JSON value"))
+                throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath + keys, debugDescription: "Invalid JSON value"))
             }
         }
     }

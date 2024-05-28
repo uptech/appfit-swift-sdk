@@ -8,16 +8,18 @@
 import Foundation
 
 extension AppFitEvent {
-    internal func convertToRawMetricEvent(userId: String?, anonymousId: String?, systemProperties: SystemProperties?) -> RawMetricEvent {
-        return RawMetricEvent(
+    internal func convertToRawMetricEvent(
+        userId: String?,
+        anonymousId: String?
+    ) -> MetricEvent {
+        return MetricEvent(
             occurredAt: self.date,
-            payload: MetricEvent(
-                eventId: self.id,
-                name: self.name,
+            payload: EventPayload(
+                sourceEventId: self.id,
+                eventName: self.name,
                 userId: userId,
                 anonymousId: anonymousId,
-                properties: self.properties,
-                systemProperties: systemProperties
+                properties: self.properties
             )
         )
     }

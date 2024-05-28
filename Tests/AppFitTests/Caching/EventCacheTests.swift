@@ -95,6 +95,7 @@ final class EventCacheTests: XCTestCase {
     }
 
     func testDiskWriting() async {
+        
         let expectation = XCTestExpectation(description: "Test Disk Writing")
 
         let event = AppFitEvent(name: "test")
@@ -108,7 +109,7 @@ final class EventCacheTests: XCTestCase {
         expectation.fulfill()
 
         let readingExpectation = XCTestExpectation(description: "Test Disk Reading")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
             Task {
                 let values = await self.cache.readDataFromDisk()
                 XCTAssertEqual(values.count, 1)

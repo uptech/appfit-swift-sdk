@@ -63,7 +63,7 @@ internal struct APIClient {
      * - Parameters:
      *   - event: The event to send.
      */
-    internal func sendEvent(_ event: RawMetricEvent) async throws -> Bool {
+    internal func sendEvent(_ event: MetricEvent) async throws -> Bool {
         guard self.monitor.currentPath.status == .satisfied else {
             return false
         }
@@ -104,7 +104,7 @@ internal struct APIClient {
      * - Parameters:
      *   - event: The event to send.
      */
-    internal func sendEvents(_ events: [RawMetricEvent]) async throws -> Bool {
+    internal func sendEvents(_ events: [MetricEvent]) async throws -> Bool {
         guard self.monitor.currentPath.status == .satisfied else {
             return false
         }
@@ -115,7 +115,7 @@ internal struct APIClient {
         request.setValue("Basic \(self.apiKey)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "POST"
         do {
-            request.httpBody = try self.encoder.encode(BatchRawMetricEvents(events: events))
+            request.httpBody = try self.encoder.encode(BatchMetricEvents(events: events))
         } catch {
             return false
         }

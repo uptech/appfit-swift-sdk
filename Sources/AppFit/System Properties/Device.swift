@@ -34,6 +34,8 @@ internal struct Device {
         return model
 #elseif os(macOS)
         return ProcessInfo.processInfo.deviceModel ?? "Unknown"
+#else
+        return ""
 #endif
     }
 
@@ -44,6 +46,8 @@ internal struct Device {
 #elseif os(macOS)
         let version = ProcessInfo.processInfo.operatingSystemVersion
         return "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+#else
+        return ""
 #endif
     }
 }

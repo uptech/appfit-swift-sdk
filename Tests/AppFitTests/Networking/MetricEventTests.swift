@@ -10,22 +10,26 @@ import XCTest
 
 final class MetricEventTests: XCTestCase {
     let testEvent = MetricEvent(
-        eventId: UUID(),
-        name: "test",
-        userId: nil,
-        anonymousId: nil,
-        properties: ["property": "value"],
-        systemProperties: nil
+        occurredAt: Date(),
+        payload: EventPayload(
+            sourceEventId: UUID(),
+            eventName: "test",
+            userId: nil,
+            anonymousId: nil,
+            properties: nil,
+            systemProperties: nil
+        )
     )
 
     func testEncoding() throws {
         let encoder = JSONEncoder()
         let data = try encoder.encode(self.testEvent)
         let object = try JSONSerialization.jsonObject(with: data) as! [String: Any]
-        let keys = (object["properties"] as? [String: Any])?.keys
+        let payload = object["payload"] as! [String: Any]
 
-        XCTAssertEqual(self.testEvent.name, object["name"] as? String)
-        XCTAssertEqual(self.testEvent.properties?.keys, keys)
+        XCTAssertNotNil(object["occurredAt"])
+        XCTAssertEqual(self.testEvent.payload.eventName, payload["eventName"] as? String)
+        XCTAssertNil(self.testEvent.payload.properties)
     }
 
     func testDecoding() throws {
@@ -34,7 +38,19 @@ final class MetricEventTests: XCTestCase {
         let decoder = JSONDecoder()
         let object = try decoder.decode(MetricEvent.self, from: data)
 
-        XCTAssertEqual(self.testEvent.name, object.name)
-        XCTAssertEqual(self.testEvent.properties?.keys, object.properties?.keys)
+        XCTAssertEqual(self.testEvent.occurredAt, object.occurredAt)
+        XCTAssertEqual(self.testEvent.payload.eventName, object.payload.eventName)
+        XCTAssertEqual(self.testEvent.payload.properties?.keys, object.payload.properties?.keys)
+    }
+
+    func testAppFitEventToRawEvent() throws {
+        let event = AppFitEvent(name: "test", properties: ["key": "value"])
+        let rawEvent = event.convertToRawMetricEvent(
+            userId: nil,
+            anonymousId: nil
+        )
+
+        XCTAssertEqual(event.name, rawEvent.payload.eventName)
+        XCTAssertEqual(rawEvent.payload.origin, "swift")
     }
 }
