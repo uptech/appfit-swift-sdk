@@ -57,7 +57,7 @@ internal struct OperatingSystem: Codable {
 
     /// Operating System Version
     ///
-    /// This will follow APple's Semantic Versioning
+    /// This will follow Apple's Semantic Versioning
     /// so it will return a string similar to major.minor.path (i.e. 17.5.1)
     ///
     /// Note: Linux is untested so the version will return an empty string

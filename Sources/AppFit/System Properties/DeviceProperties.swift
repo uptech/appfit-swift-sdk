@@ -10,7 +10,7 @@ import Foundation
 /**
  * Device Properties
  *
- * These includes all of the metadata related tothe device
+ * These includes all of the metadata related to the device
  */
 internal struct DeviceProperties: Codable {
     /// The Device Manufacturer (Apple)

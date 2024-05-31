@@ -29,7 +29,7 @@ internal struct EventSystemProperties: Codable {
     /// Note: Linux is untested and will return nil for this property
     let device: DeviceProperties?
 
-    /// All of the operating system proerties
+    /// All of the operating system properties
     /// These include the operating system name (i.e. iOS or macOS)
     /// and the version number (i.e. 17.5.1)
     /// Note: Linux is untested and will return an empty string for the version.
