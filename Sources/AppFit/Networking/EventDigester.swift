@@ -50,12 +50,11 @@ internal struct EventDigester: Digestible {
                 userId: self.appFitCache.userId,
                 anonymousId: self.appFitCache.anonymousId
             )
-            let result = try await self.apiClient.sendEvent(rawMetric)
-
-            // If the network requests succeeds, remove the event from the cache
-            switch result {
-            case true: break // For now, we just do nothing.
-            case false: await self.cache.add(event: event)
+            do {
+                try await self.apiClient.sendEvent(rawMetric)
+            } catch {
+                // If the request fails, lets add it to the cache
+                await self.cache.add(event: event)
             }
         }
     }
@@ -81,12 +80,11 @@ internal struct EventDigester: Digestible {
             let userId = await self.appFitCache.userId
             let anonymousId = await self.appFitCache.anonymousId
             let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId) })
-            let result = try await self.apiClient.sendEvents(rawEvents)
-
-            // If the network requests succeeds, remove all the events from cache
-            switch result {
-            case true: await self.cache.clear()
-            case false: break // For now, we just do nothing.
+            do {
+                try await self.apiClient.sendEvents(rawEvents)
+                await self.cache.clear()
+            } catch {
+                // If the request fails, we can just ignore it for now
             }
         }
     }

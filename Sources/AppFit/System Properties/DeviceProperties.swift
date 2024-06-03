@@ -34,7 +34,7 @@ internal struct DeviceProperties: Codable {
         #else
         return DeviceProperties(
             manufacturer: "Apple",
-            model: Device.current.model
+            model: Device.current.modelIdentifier
         )
         #endif
     }()

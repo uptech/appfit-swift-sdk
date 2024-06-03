@@ -63,79 +63,73 @@ internal struct APIClient {
      * - Parameters:
      *   - event: The event to send.
      */
-    internal func sendEvent(_ event: MetricEvent) async throws -> Bool {
+    internal func sendEvent(_ event: MetricEvent) async throws {
         guard self.monitor.currentPath.status == .satisfied else {
-            return false
+            throw AppFitError.noInternet
         }
 
         let url = URL(string: "/metric-events", relativeTo: self.baseUrl)!
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Basic \(self.apiKey)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "POST"
+        var request = self.buildRequest(url)
         do {
             request.httpBody = try self.encoder.encode(event)
         } catch {
-            return false
+            throw AppFitError.encodingFailed
         }
 
-        return try await withCheckedThrowingContinuation { continuation in
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                if let _ = error {
-                    continuation.resume(returning: false)
-                    return
-                }
-
-                guard let response = response as? HTTPURLResponse else {
-                    continuation.resume(returning: false)
-                    return
-                }
-                guard (200..<300).contains(response.statusCode) else {
-                    continuation.resume(returning: false)
-                    return
-                }
-                continuation.resume(returning: true)
-            }
-            task.resume()
-        }
+        try await self.send(request)
     }
 
     /** Sends an event to the AppFit API.
      * - Parameters:
      *   - event: The event to send.
      */
-    internal func sendEvents(_ events: [MetricEvent]) async throws -> Bool {
+    internal func sendEvents(_ events: [MetricEvent]) async throws {
         guard self.monitor.currentPath.status == .satisfied else {
-            return false
+            throw AppFitError.noInternet
         }
 
         let url = URL(string: "/metric-events/batch", relativeTo: self.baseUrl)!
+        var request = self.buildRequest(url)
+        do {
+            request.httpBody = try self.encoder.encode(BatchMetricEvents(events: events))
+        } catch {
+            throw AppFitError.encodingFailed
+        }
+
+        try await self.send(request)
+    }
+
+    /**
+     * Builds the network request
+     */
+    private func buildRequest(_ url: URL) -> URLRequest {
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Basic \(self.apiKey)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "POST"
-        do {
-            request.httpBody = try self.encoder.encode(BatchMetricEvents(events: events))
-        } catch {
-            return false
-        }
+        return request
+    }
 
+    /**
+     * Performs the network request
+     */
+    private func send(_ request: URLRequest) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 if let _ = error {
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: AppFitError.networkRequestFailed)
                     return
                 }
 
                 guard let response = response as? HTTPURLResponse else {
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: AppFitError.networkRequestFailed)
                     return
                 }
                 guard (200..<300).contains(response.statusCode) else {
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: AppFitError.networkRequestFailed)
                     return
                 }
-                continuation.resume(returning: true)
+                continuation.resume()
             }
             task.resume()
         }

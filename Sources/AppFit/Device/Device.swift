@@ -18,9 +18,9 @@ internal struct Device {
     static let current = Device()
 
     /// The Model of the Device (MacBookPro18,1 or iPhone18,1)
-    var model: String {
+    var modelIdentifier: String {
 #if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
-        let model = UIDevice.current.model
+        let model = UIDevice.current.modelIdentifier
         if model == "arm64" || model == "i386" || model == "x86_64" {
             guard let simulator = ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] else {
                 return "Simulator"
@@ -33,7 +33,7 @@ internal struct Device {
         }
         return model
 #elseif os(macOS)
-        return ProcessInfo.processInfo.deviceModel ?? "Unknown"
+        return ProcessInfo.processInfo.modelIdentifier ?? "Unknown"
 #else
         return ""
 #endif
@@ -54,7 +54,7 @@ internal struct Device {
 
 #if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
 extension UIDevice {
-    var model: String {
+    var modelIdentifier: String {
         var systemInfo = utsname()
         uname(&systemInfo)
         let machineMirror = Mirror(reflecting: systemInfo.machine)
@@ -68,7 +68,7 @@ extension UIDevice {
 }
 #elseif os(macOS)
 extension ProcessInfo {
-    var deviceModel: String? {
+    var modelIdentifier: String? {
         let service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
         defer {
             IOObjectRelease(service)

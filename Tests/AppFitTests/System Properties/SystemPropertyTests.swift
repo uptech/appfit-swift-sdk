@@ -19,7 +19,7 @@ final class SystemPropertyTests: XCTestCase {
 
         #if os(macOS)
         XCTAssertEqual(properties.operatingSystem?.name, OperatingSystemName.macOS)
-        XCTAssertEqual(properties.operatingSystem?.version, "14.4.1")
+        XCTAssertEqual(properties.operatingSystem?.version, "14.5.0")
         #elseif os(iOS)
         XCTAssertEqual(properties.operatingSystem?.name, OperatingSystemName.iOS)
         XCTAssertEqual(properties.operatingSystem?.version, "17.5")

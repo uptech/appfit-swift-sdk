@@ -24,9 +24,11 @@ final class APIClientTests: XCTestCase {
                 properties: ["language": "swift"]
             )
         )
-        let result = try await self.client.sendEvent(event)
-
-        XCTAssertTrue(result)
+        do {
+            try await self.client.sendEvent(event)
+        } catch {
+            XCTFail("\(error)")
+        }
     }
 
     func testSendingBatchEvents() async throws {
@@ -40,8 +42,10 @@ final class APIClientTests: XCTestCase {
                 properties: ["language": "swift"]
             )
         )
-        let result = try await self.client.sendEvents([event])
-
-        XCTAssertTrue(result)
+        do {
+            try await self.client.sendEvents([event])
+        } catch {
+            XCTFail("\(error)")
+        }
     }
 }
