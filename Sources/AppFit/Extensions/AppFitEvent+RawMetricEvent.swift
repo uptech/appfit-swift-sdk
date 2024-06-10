@@ -10,7 +10,8 @@ import Foundation
 extension AppFitEvent {
     internal func convertToRawMetricEvent(
         userId: String?,
-        anonymousId: String?
+        anonymousId: String?,
+        appVersion: String?
     ) -> MetricEvent {
         return MetricEvent(
             occurredAt: self.date,
@@ -19,7 +20,8 @@ extension AppFitEvent {
                 eventName: self.name,
                 userId: userId,
                 anonymousId: anonymousId,
-                properties: self.properties
+                properties: self.properties,
+                systemProperties: EventSystemProperties(appVersion: appVersion ?? App.current.version)
             )
         )
     }

@@ -47,7 +47,8 @@ final class MetricEventTests: XCTestCase {
         let event = AppFitEvent(name: "test", properties: ["key": "value"])
         let rawEvent = event.convertToRawMetricEvent(
             userId: nil,
-            anonymousId: nil
+            anonymousId: nil,
+            appVersion: nil
         )
 
         XCTAssertEqual(event.name, rawEvent.payload.eventName)

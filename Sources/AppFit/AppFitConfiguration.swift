@@ -24,12 +24,18 @@ public struct AppFitConfiguration: Codable, Sendable {
     /// The API key provided by AppFit.
     internal let apiKey: String
 
+    /// The version of the Host App
+    /// Override this to pass in your own version string.
+    internal let appVersion: String?
+
     /**
      * Initializes the AppFitConfiguration with the provided API key.
      * - Parameters:
      *   - apiKey: The API key provided by AppFit.
+     *   - appVersion: The version of the app implementing the SDK
      */
-    public init(apiKey: String) {
+    public init(apiKey: String, appVersion: String? = nil) {
         self.apiKey = apiKey
+        self.appVersion = appVersion ?? App.current.version
     }
 }

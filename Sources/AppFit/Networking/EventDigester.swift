@@ -20,6 +20,9 @@ internal struct EventDigester: Digestible {
     /// The API key for the project.
     internal let apiKey: String
 
+    /// The version of the app implementing the SDK
+    internal let appVersion: String?
+
     /// The cache for the events.
     internal let cache = EventCache()
 
@@ -30,8 +33,9 @@ internal struct EventDigester: Digestible {
     internal let apiClient: APIClient
 
     /// Initializes the `EventDigester` with the provided `apiKey`.
-    internal init(apiKey: String) {
+    internal init(apiKey: String, appVersion: String?) {
         self.apiKey = apiKey
+        self.appVersion = appVersion
         self.apiClient = APIClient(apiKey: apiKey)
 
         Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { [self] _ in
@@ -48,7 +52,8 @@ internal struct EventDigester: Digestible {
         Task {
             let rawMetric = await event.convertToRawMetricEvent(
                 userId: self.appFitCache.userId,
-                anonymousId: self.appFitCache.anonymousId
+                anonymousId: self.appFitCache.anonymousId,
+                appVersion: self.appVersion
             )
             do {
                 try await self.apiClient.sendEvent(rawMetric)
@@ -79,7 +84,7 @@ internal struct EventDigester: Digestible {
             let cachedEvents = await self.cache.events
             let userId = await self.appFitCache.userId
             let anonymousId = await self.appFitCache.anonymousId
-            let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId) })
+            let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId, appVersion: self.appVersion) })
             do {
                 try await self.apiClient.sendEvents(rawEvents)
                 await self.cache.clear()
