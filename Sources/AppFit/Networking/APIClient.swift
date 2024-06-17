@@ -24,10 +24,10 @@ internal struct APIClient {
     internal let baseUrl: URL
 
     /// Network Monitoring Queue
-    let queue = DispatchQueue(label: "NetworkMonitor")
+    private let queue = DispatchQueue(label: "NetworkMonitor")
 
     /// Network Monitor
-    let monitor = NWPathMonitor()
+    private let monitor = NWPathMonitor()
 
     /** Initializes a new APIClient with the provided API key.
      * - Parameters:
@@ -43,6 +43,7 @@ internal struct APIClient {
 
         self.encoder = JSONEncoder()
         self.encoder.dateEncodingStrategy = .iso8601
+        self.encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
 
         /*
          * Uncomment this if you need to debug network connecttivity

@@ -14,12 +14,12 @@ import Foundation
  */
 internal struct DeviceProperties: Codable {
     /// The Device Manufacturer (Apple)
-    let manufacturer: String
+    internal let manufacturer: String
 
     /// The Device Model (MacBookPro18,4)
-    let model: String
+    internal let model: String
 
-    init(
+    internal init(
         manufacturer: String,
         model: String
     ) {

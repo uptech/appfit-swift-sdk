@@ -53,7 +53,7 @@ internal struct OperatingSystem: Codable {
     ///
     /// This returns the name of the operating system
     /// Example: iOS, macOS, tvOS, etc
-    let name: OperatingSystemName
+    internal let name: OperatingSystemName
 
     /// Operating System Version
     ///
@@ -61,9 +61,9 @@ internal struct OperatingSystem: Codable {
     /// so it will return a string similar to major.minor.path (i.e. 17.5.1)
     ///
     /// Note: Linux is untested so the version will return an empty string
-    let version: String
+    internal let version: String
 
-    init(
+    internal init(
         name: OperatingSystemName,
         version: String
     ) {

@@ -8,9 +8,25 @@
 import Foundation
 
 /**
+ * The version of the MetricEvent
+ */
+private enum MetricEventVersion: String, Codable {
+    case v2 = "2"
+}
+
+/// The source of the Event
+/// In this case, this will always be `appfit`.
+private let AppFitEventSource: String = "appfit"
+
+/**
  * A raw event that is tracked by AppFit.
  */
 internal struct MetricEvent: Codable {
+    /// Metric Event Version
+    ///
+    /// The version of the event payload.
+    private let version: MetricEventVersion
+
     /// Event Source
     ///
     /// This declares where the event is coming from
@@ -29,8 +45,12 @@ internal struct MetricEvent: Codable {
     internal let payload: EventPayload
 
     /// Creates a new instance of ``MetricEvent``.
-    internal init(occurredAt: Date, payload: EventPayload) {
-        self.eventSource = "appfit"
+    internal init(
+        occurredAt: Date,
+        payload: EventPayload
+    ) {
+        self.version = MetricEventVersion.v2
+        self.eventSource = AppFitEventSource
         self.occurredAt = occurredAt
         self.payload = payload
     }

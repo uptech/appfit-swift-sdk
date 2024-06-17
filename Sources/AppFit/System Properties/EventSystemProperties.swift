@@ -21,21 +21,21 @@ internal struct EventSystemProperties: Codable {
     }
 
     /// The version of the parent bundle
-    let appVersion: String?
+    internal let appVersion: String?
 
     /// All of the device related properties
     /// These include anything that is specific to the physical device
     /// such as model, operating system version, platform, etc
     /// Note: Linux is untested and will return nil for this property
-    let device: DeviceProperties?
+    internal let device: DeviceProperties?
 
     /// All of the operating system properties
     /// These include the operating system name (i.e. iOS or macOS)
     /// and the version number (i.e. 17.5.1)
     /// Note: Linux is untested and will return an empty string for the version.
-    let operatingSystem: OperatingSystem?
+    internal let operatingSystem: OperatingSystem?
 
-    init(
+    internal init(
         appVersion: String? = App.current.version,
         device: DeviceProperties? = DeviceProperties.current,
         operatingSystem: OperatingSystem? = OperatingSystem.current
