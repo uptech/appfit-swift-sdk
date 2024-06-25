@@ -14,6 +14,8 @@ final class APIClientTests: XCTestCase {
     )
 
     func testSendingEvent() async throws {
+        let ipAddress = try await IPAddress().fetchIpAddress()
+        
         let event = MetricEvent(
             occurredAt: Date(),
             payload: EventPayload(
@@ -21,7 +23,8 @@ final class APIClientTests: XCTestCase {
                 eventName: "unit_test",
                 userId: nil,
                 anonymousId: "xcode_75fbf7a3-2197-4353-9b39-baedf4628c68",
-                properties: ["language": "swift"]
+                properties: ["language": "swift"],
+                systemProperties: EventSystemProperties(ipAddress: ipAddress)
             )
         )
         do {
@@ -32,6 +35,8 @@ final class APIClientTests: XCTestCase {
     }
 
     func testSendingBatchEvents() async throws {
+        let ipAddress = try await IPAddress().fetchIpAddress()
+
         let event = MetricEvent(
             occurredAt: Date(),
             payload: EventPayload(
@@ -39,7 +44,8 @@ final class APIClientTests: XCTestCase {
                 eventName: "unit_test",
                 userId: nil,
                 anonymousId: "xcode_75fbf7a3-2197-4353-9b39-baedf4628c68",
-                properties: ["language": "swift"]
+                properties: ["language": "swift"],
+                systemProperties: EventSystemProperties(ipAddress: ipAddress)
             )
         )
         do {

@@ -23,6 +23,12 @@ internal struct EventDigester: Digestible {
     /// The version of the app implementing the SDK
     internal let appVersion: String?
 
+    /// Enable IP Tracking
+    internal let enableIpTracking: Bool
+
+    /// Contains the IP Address Information
+    internal let ipAddress = IPAddress()
+
     /// The cache for the events.
     internal let cache = EventCache()
 
@@ -33,9 +39,15 @@ internal struct EventDigester: Digestible {
     internal let apiClient: APIClient
 
     /// Initializes the `EventDigester` with the provided `apiKey`.
-    internal init(apiKey: String, appVersion: String?) {
+    internal init(
+        apiKey: String,
+        appVersion: String?,
+        enableIpTracking: Bool = true
+    ) {
         self.apiKey = apiKey
         self.appVersion = appVersion
+        self.enableIpTracking = enableIpTracking
+        
         self.apiClient = APIClient(apiKey: apiKey)
 
         Timer.scheduledTimer(withTimeInterval: 15 * 60, repeats: true) { [self] _ in
@@ -50,10 +62,12 @@ internal struct EventDigester: Digestible {
     /// wait for the digester to perform the batch send of cached events.
     internal func digest(event: AppFitEvent) {
         Task {
+            let ip = try? await self.ipAddress.fetchIpAddress()
             let rawMetric = await event.convertToRawMetricEvent(
                 userId: self.appFitCache.userId,
                 anonymousId: self.appFitCache.anonymousId,
-                appVersion: self.appVersion
+                appVersion: self.appVersion,
+                ipAddress: self.enableIpTracking ? ip : nil
             )
             do {
                 try await self.apiClient.sendEvent(rawMetric)
@@ -84,7 +98,15 @@ internal struct EventDigester: Digestible {
             let cachedEvents = await self.cache.events
             let userId = await self.appFitCache.userId
             let anonymousId = await self.appFitCache.anonymousId
-            let rawEvents = cachedEvents.map({ $0.convertToRawMetricEvent(userId: userId, anonymousId: anonymousId, appVersion: self.appVersion) })
+            let ipAddress = try? await self.ipAddress.fetchIpAddress()
+            let rawEvents = cachedEvents.map({
+                $0.convertToRawMetricEvent(
+                    userId: userId,
+                    anonymousId: anonymousId,
+                    appVersion: self.appVersion,
+                    ipAddress: self.enableIpTracking ? ipAddress : nil
+                )
+            })
             do {
                 try await self.apiClient.sendEvents(rawEvents)
                 await self.cache.clear()

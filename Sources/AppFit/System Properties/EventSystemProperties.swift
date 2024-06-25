@@ -16,12 +16,16 @@ import Foundation
 internal struct EventSystemProperties: Codable {
     enum CodingKeys: String, CodingKey {
         case appVersion
+        case ipAddress
         case device
         case operatingSystem = "os"
     }
 
     /// The version of the parent bundle
     internal let appVersion: String?
+
+    /// The IP Address
+    internal let ipAddress: String?
 
     /// All of the device related properties
     /// These include anything that is specific to the physical device
@@ -37,10 +41,12 @@ internal struct EventSystemProperties: Codable {
 
     internal init(
         appVersion: String? = App.current.version,
+        ipAddress: String? = nil,
         device: DeviceProperties? = DeviceProperties.current,
         operatingSystem: OperatingSystem? = OperatingSystem.current
     ) {
         self.appVersion = appVersion
+        self.ipAddress = ipAddress
         self.device = device
         self.operatingSystem = operatingSystem
     }
